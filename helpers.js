@@ -216,6 +216,22 @@ helpers.findNearestWeakerEnemy = function(gameData) {
   return pathInfoObject.direction;
 };
 
+// Find the enemy with under 20 health
+helpers.findNearestPatheticEnemy = function(gameData) {
+    var hero = gameData.activeHero;
+    var board = gameData.board;
+
+    //Get the path info object
+    var pathInfoObject = helpers.findNearestObjectDirectionAndDistance(board, hero, function(enemyTile) {
+        return enemyTile.type === 'Hero' && enemyTile.team !== hero.team && enemyTile.health < 20;
+    });
+
+    //Return the direction that needs to be taken to achieve the goal
+    //If no weaker enemy exists, will simply return undefined, which will
+    //be interpreted as "Stay" by the game object
+    return pathInfoObject.direction;
+};
+
 // Returns the direction of the nearest enemy
 // (or returns false if there are no accessible enemies)
 helpers.findNearestEnemy = function(gameData) {

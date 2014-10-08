@@ -1,31 +1,31 @@
 /* 
 
-  The only function that is required in this file is the "move" function
+ The only function that is required in this file is the "move" function
 
-  You MUST export the move function, in order for your code to run
-  So, at the bottom of this code, keep the line that says:
+ You MUST export the move function, in order for your code to run
+ So, at the bottom of this code, keep the line that says:
 
-  module.exports = move;
+ module.exports = move;
 
-  The "move" function must return "North", "South", "East", "West", or "Stay"
-  (Anything else will be interpreted by the game as "Stay")
-  
-  The "move" function should accept two arguments that the website will be passing in: 
-    - a "gameData" object which holds all information about the current state
-      of the battle
+ The "move" function must return "North", "South", "East", "West", or "Stay"
+ (Anything else will be interpreted by the game as "Stay")
 
-    - a "helpers" object, which contains useful helper functions
-      - check out the helpers.js file to see what is available to you
+ The "move" function should accept two arguments that the website will be passing in:
+ - a "gameData" object which holds all information about the current state
+ of the battle
 
-    (the details of these objects can be found on javascriptbattle.com/rules)
+ - a "helpers" object, which contains useful helper functions
+ - check out the helpers.js file to see what is available to you
 
-  This file contains four example heroes that you can use as is, adapt, or
-  take ideas from and implement your own version. Simply uncomment your desired
-  hero and see what happens in tomorrow's battle!
+ (the details of these objects can be found on javascriptbattle.com/rules)
 
-  Such is the power of Javascript!!!
+ This file contains four example heroes that you can use as is, adapt, or
+ take ideas from and implement your own version. Simply uncomment your desired
+ hero and see what happens in tomorrow's battle!
 
-*/
+ Such is the power of Javascript!!!
+
+ */
 
 //TL;DR: If you are new, just uncomment the 'move' function that you think sounds like fun!
 //       (and comment out all the other move functions)
@@ -80,30 +80,32 @@
 // };
 
 
-var move = function(gameData, helpers) {
-  var myHero = gameData.activeHero;
+var move = function (gameData, helpers) {
+    var myHero = gameData.activeHero;
 
-  //Get stats on the nearest health well
-  var healthWellStats = helpers.findNearestObjectDirectionAndDistance(gameData.board, myHero, function(boardTile) {
-    if (boardTile.type === 'HealthWell') {
-      return true;
+    //Get stats on the nearest health well
+    var healthWellStats = helpers.findNearestObjectDirectionAndDistance(gameData.board, myHero, function (boardTile) {
+        if (boardTile.type === 'HealthWell') {
+            return true;
+        }
+    });
+
+    var distanceToHealthWell = healthWellStats.distance;
+    var directionToHealthWell = healthWellStats.direction;
+
+
+    if (myHero.health > 80) {
+        return helpers.findNearestEnemy(gameData)
     }
-  });
-  var distanceToHealthWell = healthWellStats.distance;
-  var directionToHealthWell = healthWellStats.direction;
-  
-
-  if (myHero.health < 20) {
-    return helpers.findNearestEnemy(gameData)
-  }
-  else if (myHero.health < 100 && distanceToHealthWell === 1) {
-    //Heal if you aren't full health and are close to a health well already
-    return directionToHealthWell;
-  }
-  else {
-    //If healthy, go capture a diamond mine!
-    return helpers.findNearestNonTeamDiamondMine(gameData);
-  }
+    else if (myHero.health < 80 && myHero.health > 20) {
+        return helpers.findNearestPatheticEnemy(gameData)
+    }
+    else if (myHero.health < 20 && distanceToHealthWell === 1) {
+        return directionToHealthWell;
+    }
+    else {
+        return helpers.findNearestUnownedDiamondMine(gameData);
+    }
 };
 
 // // The "Selfish Diamond Miner"
